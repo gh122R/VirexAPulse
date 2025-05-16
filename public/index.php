@@ -6,6 +6,8 @@
 
 declare(strict_types=1);
 
+use App\Core\Facades\Nexus;
+
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 require_once dirname(__DIR__) . '/src/app/config.php';
 require_once dirname(__DIR__) . '/src/web.php';
@@ -17,4 +19,4 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-echo $router->handler($_SERVER['REQUEST_URI']);
+echo Nexus::handler($_SERVER['REQUEST_URI']);
