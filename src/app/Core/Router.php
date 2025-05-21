@@ -11,17 +11,18 @@ use App\Core\Interfaces\RouterInterface;
 class Router implements RouterInterface
 {
     private array $routes;
-    private array $dinamicRoutes;
-    private Container $container;
+    private array $dynamicRoutes;
 
     public function __construct()
     {
         $this->routes = [];
-        $this->dinamicRoutes = [];
+        $this->dynamicRoutes = [];
     }
     /**
-     * Методы для регистрации маршрутов. Они принимают строку с маршрутом, действие, которое будет выполнять вызов функции или контроллера и
-     * middleware, который может быть, как функцией, так и массивом.
+     * +--------------------------------------------------------------------------------------------------------------------------------------+
+     * | Методы для регистрации маршрутов. Они принимают строку с маршрутом, действие, которое будет выполнять вызов функции или контроллера и |
+     * | middleware, который может быть, как функцией, так и массивом.                                                                         |
+     * +-------------------------------------------------------------------------------------------------------------------------------------+
     */
     public function get(string $route, array|callable $action, array|callable $middleware = []): self
     {
@@ -54,7 +55,7 @@ class Router implements RouterInterface
         {
             $pattern = "#^" . preg_replace('#\{(\w+)\}#', '(\w+)', $route) . "$#";
             preg_match_all('/\{(\w+)\}/', $route, $matches);
-            $this->dinamicRoutes[$route] = [
+            $this->dynamicRoutes[$route] = [
                 'action' => $action,
                 'method' => $method,
                 'middlewareList' => $middleware,
@@ -136,20 +137,22 @@ class Router implements RouterInterface
         }
     }
     /**
-     *  handler - это обработчик маршрутов. Он берёт полученный адрес и ищет совпадения в массиве $routes, далее
-     * проверяет заданный метод(GET,POST,PUT,DELETE) в зарегистрированном маршруте с отправленным методом(GET,POST,PUT,DELETE).
-     * Если всё окей, то создаём экземпляр переданного контроллера и обращаемся к его методу, указанному при регистрации маршрута.
-     * Если вместо контроллера передана функция, то вызываем её.
-     * Всё это происходит при вызове замыкания $next(), но мы не вызываем её здесь сразу на прямую, почему?
-     * Это сделано для проверки заданных middleware'ов, вместо $next() мы возвращаем вызов метода checkParameters,
-     * который проходит по цепочке middleware' ов и в конечном итоге вызывает $next().
+     * +-----------------------------------------------------------------------------------------------------------------------------+
+     * | handler - это обработчик маршрутов. Он берёт полученный адрес и ищет совпадения в массиве $routes, далее                    |
+     * | проверяет заданный метод(GET,POST,PUT,DELETE) в зарегистрированном маршруте с отправленным методом(GET,POST,PUT,DELETE).    |
+     * | Если всё окей, то создаём экземпляр переданного контроллера и обращаемся к его методу, указанному при регистрации маршрута. |
+     * | Если вместо контроллера передана функция, то вызываем её.                                                                   |
+     * | Всё это происходит при вызове замыкания $next(), но мы не вызываем её здесь сразу на прямую, почему?                        |
+     * | Это сделано для проверки заданных middleware'ов, вместо $next() мы возвращаем вызов метода checkParameters,                 |
+     * | который проходит по цепочке middleware' ов и в конечном итоге вызывает $next().                                             |
+     *  +-----------------------------------------------------------------------------------------------------------------------------+
     */
     public function handler(string $uri): mixed
     {
         $route = parse_url($uri, PHP_URL_PATH);
         $routeData = $this->routes[$route] ?? null;
         $parameters = null;
-        if(array_key_exists('view', $routeData))
+        if($routeData && array_key_exists('view', $routeData))
         {
             $viewPath = PATH . "/src/Views/" . $routeData['view'] ?? null;
             if(class_exists(View::class))
@@ -170,7 +173,7 @@ class Router implements RouterInterface
         }
         if(!$routeData)
         {
-            foreach ($this->dinamicRoutes as $matchRoute => $data)
+            foreach ($this->dynamicRoutes as $matchRoute => $data)
             {
                 if(preg_match($data['pattern'], $route, $matches))
                 {
