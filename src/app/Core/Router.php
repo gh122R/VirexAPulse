@@ -3,19 +3,22 @@
 declare(strict_types = 1);
 namespace App\Core;
 
+use App\Core\Containers\Container;
 use App\Core\Helpers\ErrorHandler;
+use App\Core\Helpers\View;
+use App\Core\Interfaces\RouterInterface;
 
-class Router
+class Router implements RouterInterface
 {
     private array $routes;
     private array $dinamicRoutes;
+    private Container $container;
 
     public function __construct()
     {
         $this->routes = [];
         $this->dinamicRoutes = [];
     }
-
     /**
      * Методы для регистрации маршрутов. Они принимают строку с маршрутом, действие, которое будет выполнять вызов функции или контроллера и
      * middleware, который может быть, как функцией, так и массивом.
@@ -32,20 +35,21 @@ class Router
         return $this;
     }
 
-    public function put(string $route, array|callable $action, array|callable $middleware = []): self
+    public function view(string $route, string $path):self
     {
-        $this->registerRoute($route, $action, 'PUT', $middleware);
-         return $this;
-    }
-
-    public function delete(string $route, array|callable $action, array|callable $middleware = []): self
-    {
-        $this->registerRoute($route, $action, 'DELETE', $middleware);
+        $this->registerRoute($route, $path, 'GET');
         return $this;
     }
 
-    private function registerRoute(string $route, array|callable $action ,string $method, array|callable $middleware = []): void
+    private function registerRoute(string $route, array|callable|string $action ,string $method, array|callable $middleware = []): void
     {
+        if(is_string($action))
+        {
+            $this->routes[$route] = [
+                'view' => $action,
+                'method' => $method,
+            ];
+        }
         if (str_contains($route, '{'))
         {
             $pattern = "#^" . preg_replace('#\{(\w+)\}#', '(\w+)', $route) . "$#";
@@ -57,7 +61,7 @@ class Router
                 'matches' => $matches[1],
                 'pattern'=> $pattern
             ];
-        }else
+        }elseif(!is_string($action))
         {
             $this->routes[$route] = [
                 'action' => $action,
@@ -66,6 +70,14 @@ class Router
             ];
         }
     }
+
+/*    private function errorCatcher()
+    {
+        if (class_exists(ErrorHandler::class))
+        {
+
+        }
+    }*/
 
     private function checkParameters(callable|array $parameters, callable $next): mixed
     {
@@ -123,7 +135,6 @@ class Router
             return ErrorHandler::classNotFound($class);
         }
     }
-
     /**
      *  handler - это обработчик маршрутов. Он берёт полученный адрес и ищет совпадения в массиве $routes, далее
      * проверяет заданный метод(GET,POST,PUT,DELETE) в зарегистрированном маршруте с отправленным методом(GET,POST,PUT,DELETE).
@@ -133,12 +144,30 @@ class Router
      * Это сделано для проверки заданных middleware'ов, вместо $next() мы возвращаем вызов метода checkParameters,
      * который проходит по цепочке middleware' ов и в конечном итоге вызывает $next().
     */
-
     public function handler(string $uri): mixed
     {
         $route = parse_url($uri, PHP_URL_PATH);
         $routeData = $this->routes[$route] ?? null;
         $parameters = null;
+        if(array_key_exists('view', $routeData))
+        {
+            $viewPath = PATH . "/src/Views/" . $routeData['view'] ?? null;
+            if(class_exists(View::class))
+            {
+                return View::render($routeData['view']);
+            }else
+            {
+                ob_start();
+                if(file_exists($viewPath . '.html'))
+                {
+                    include $viewPath . '.html';
+                }elseif(file_exists($viewPath . '.php'))
+                {
+                    include $viewPath . '.php';
+                }
+                return ob_get_clean();
+            }
+        }
         if(!$routeData)
         {
             foreach ($this->dinamicRoutes as $matchRoute => $data)

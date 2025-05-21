@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Core\Facades;
-
 use App\Core\Router;
 use Illuminate\Support\Facades\Route;
 

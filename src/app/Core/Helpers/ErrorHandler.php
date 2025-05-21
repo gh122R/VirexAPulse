@@ -16,12 +16,20 @@ namespace App\Core\Helpers;
  * */
 class ErrorHandler extends ListOfErrors
 {
-    public static function error(string $message, string $view = '', string $dangerLevel = 'Критическая ошибка'  ,string $description = ''): string
+    public static function error(string $message, string $view = '', string $dangerLevel = 'Критическая ошибка',string $description = ''): string
     {
-        return View::render($view ?: "ExceptionsPage", [
-            'Exception' => $message,
-            'DangerLevel' => $dangerLevel,
-            'Description' => $description
-        ]);
+        try {
+            if (class_exists(View::class) && file_exists(PATH . '/src/Views/ExceptionsPage.html')) {
+                return View::render($view ?: "ExceptionsPage", [
+                    'Exception' => $message,
+                    'DangerLevel' => $dangerLevel,
+                    'Description' => $description
+                ]);
+            }
+            return "--------$dangerLevel-------- <br> | $message <br> | $description ";
+        }catch (\Exception $exception)
+        {
+            return $exception->getMessage();
+        }
     }
 }

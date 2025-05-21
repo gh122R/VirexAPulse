@@ -2,29 +2,36 @@
 
 namespace App\Core\Helpers;
 
-class View
+use App\Core\Interfaces\ViewInterface;
+
+class View implements ViewInterface
 {
     /**
-     * Метод render позволяет отрисовать html-страничку и передать в неё какие-либо данные.
+     * +--------------------------------------------------------------------------------------------------------------+
      * В render передаём путь до html-странички относительно папки Views и массив, который в последующем
      * разбивается на переменные по ключам, позволяя удобнее взаимодействовать с ними в самой html' ке.
      * Если файл не найден, то скрипт прекращает работу, а router выкидывает страницу ExceptionsPage.html с ошибкой.
+     * +--------------------------------------------------------------------------------------------------------------+
     */
     public static function render(string $view, array $data = []): string
     {
+
         extract($data);
         ob_start();
-        $path =  dirname(__DIR__, 4) . '/src/Views/' . $view . '.html';
-
+        $path =  PATH . '/src/Views/' . $view . '.html';
         if (file_exists($path))
         {
             include $path;
-        }elseif (file_exists(dirname(__DIR__, 4) . '/src/Views/' . $view . '.php'))
+        }elseif (file_exists(PATH . '/src/Views/' . $view . '.php'))
         {
-            include dirname(__DIR__, 4) . '/src/Views/' . $view . '.php';
+            include PATH . '/src/Views/' . $view . '.php';
         }else
         {
-            return ErrorHandler::error("Файл представления не найден :(", description: "$view.html\(php) не найден");
+            if (class_exists(ErrorHandler::class))
+            {
+                return ErrorHandler::error("Файл представления не найден :(", description: "$view.html\(php) не найден");
+            }
+            return "Файл представления не найден :( | $view.html\(php) не найден";
         }
         return ob_get_clean();
     }
