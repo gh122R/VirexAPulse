@@ -6,7 +6,7 @@ use App\Core\Interfaces\ViewInterface;
 
 class View implements ViewInterface
 {
-    /**
+    /*
      * +--------------------------------------------------------------------------------------------------------------+
      * В render передаём путь до html-странички относительно папки Views и массив, который в последующем
      * разбивается на переменные по ключам, позволяя удобнее взаимодействовать с ними в самой html' ке.
@@ -18,13 +18,13 @@ class View implements ViewInterface
 
         extract($data);
         ob_start();
-        $path =  PATH . '/src/Views/' . $view . '.html';
+        $path =  BASE_PATH . '/src/Views/' . $view . '.html';
         if (file_exists($path))
         {
             include $path;
-        }elseif (file_exists(PATH . '/src/Views/' . $view . '.php'))
+        }elseif (file_exists(BASE_PATH . '/src/Views/' . $view . '.php'))
         {
-            include PATH . '/src/Views/' . $view . '.php';
+            include BASE_PATH . '/src/Views/' . $view . '.php';
         }else
         {
             if (class_exists(ErrorHandler::class))

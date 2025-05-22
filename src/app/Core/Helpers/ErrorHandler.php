@@ -19,7 +19,7 @@ class ErrorHandler extends ListOfErrors
     public static function error(string $message, string $view = '', string $dangerLevel = 'Критическая ошибка',string $description = ''): string
     {
         try {
-            if (class_exists(View::class) && file_exists(PATH . '/src/Views/ExceptionsPage.html')) {
+            if (class_exists(View::class) && file_exists(BASE_PATH . '/src/Views/ExceptionsPage.html')) {
                 return View::render($view ?: "ExceptionsPage", [
                     'Exception' => $message,
                     'DangerLevel' => $dangerLevel,

@@ -3,7 +3,7 @@
 declare(strict_types = 1);
 namespace App\Core;
 
-use App\Core\Containers\Container;
+
 use App\Core\Helpers\ErrorHandler;
 use App\Core\Helpers\View;
 use App\Core\Interfaces\RouterInterface;
@@ -18,7 +18,7 @@ class Router implements RouterInterface
         $this->routes = [];
         $this->dynamicRoutes = [];
     }
-    /**
+    /*
      * +--------------------------------------------------------------------------------------------------------------------------------------+
      * | Методы для регистрации маршрутов. Они принимают строку с маршрутом, действие, которое будет выполнять вызов функции или контроллера и |
      * | middleware, который может быть, как функцией, так и массивом.                                                                         |
@@ -136,7 +136,50 @@ class Router implements RouterInterface
             return ErrorHandler::classNotFound($class);
         }
     }
-    /**
+
+    private function render(string $view): string
+    {
+        $viewPath = VIEWS_PATH . $view ?? null;
+        if(class_exists(View::class))
+        {
+            return View::render($view);
+        }else
+        {
+            ob_start();
+            if(file_exists($viewPath . '.html'))
+            {
+                include $viewPath . '.html';
+            }elseif(file_exists($viewPath . '.php'))
+            {
+                include $viewPath . '.php';
+            }
+            return ob_get_clean();
+        }
+    }
+
+    private function dynamicRoutesHandler($route): string|array
+    {
+        foreach ($this->dynamicRoutes as $matchRoute => $data)
+        {
+            if(preg_match($data['pattern'], $route, $matches))
+            {
+                array_shift($matches);
+                $parameters = array_combine($data['matches'], $matches);
+                $routeData = $data;
+                break;
+            }
+        }
+        if(!isset($routeData))
+        {
+            return ErrorHandler::routeNotFound($route);
+        }
+        return [
+            'routeData' => $routeData,
+            'parameters' => $parameters,
+        ];
+    }
+
+    /*
      * +-----------------------------------------------------------------------------------------------------------------------------+
      * | handler - это обработчик маршрутов. Он берёт полученный адрес и ищет совпадения в массиве $routes, далее                    |
      * | проверяет заданный метод(GET,POST,PUT,DELETE) в зарегистрированном маршруте с отправленным методом(GET,POST,PUT,DELETE).    |
@@ -154,67 +197,45 @@ class Router implements RouterInterface
         $parameters = null;
         if($routeData && array_key_exists('view', $routeData))
         {
-            $viewPath = PATH . "/src/Views/" . $routeData['view'] ?? null;
-            if(class_exists(View::class))
-            {
-                return View::render($routeData['view']);
-            }else
-            {
-                ob_start();
-                if(file_exists($viewPath . '.html'))
-                {
-                    include $viewPath . '.html';
-                }elseif(file_exists($viewPath . '.php'))
-                {
-                    include $viewPath . '.php';
-                }
-                return ob_get_clean();
-            }
+            return $this->render($routeData['view']);
         }
         if(!$routeData)
         {
-            foreach ($this->dynamicRoutes as $matchRoute => $data)
+            $data = $this->dynamicRoutesHandler($route);
+            if(is_array($data))
             {
-                if(preg_match($data['pattern'], $route, $matches))
-                {
-                    array_shift($matches);
-                    $parameters = array_combine($data['matches'], $matches);
-                    $routeData = $data;
-                    break;
-                }
-            }
-            if(!$routeData)
+                extract($data);
+            }else
             {
-                return ErrorHandler::routeNotFound($route);
+                return $data;
             }
         }
         $next = function () use ($routeData, $route, $parameters)
         {
             if ($routeData !== null && $_SERVER['REQUEST_METHOD'] === $routeData["method"])
-          {
-              if (is_callable($routeData["action"]))
-              {
-                   $response =  call_user_func($routeData["action"]);
-              }elseif (is_array($routeData["action"]))
-              {
-                  [$class, $method] = $routeData["action"];
-                  $parameters !== null ? $controller = $this->createClassInstance($class, $parameters) : $controller = $this->createClassInstance($class);
-                  if (!is_object($controller))
-                  {
-                      return ErrorHandler::controllerNotFound($class);
-                  }else
-                  {
-                      method_exists($controller, $method) ? $response = call_user_func([$controller, $method]) : $response= ErrorHandler::methodNotFound($method, $class);
-                  }
-              }
-          }
+            {
+                if (is_callable($routeData["action"]))
+                {
+                    $response =  call_user_func($routeData["action"]);
+                }elseif (is_array($routeData["action"]))
+                {
+                    [$class, $method] = $routeData["action"];
+                    $parameters !== null ? $controller = $this->createClassInstance($class, $parameters) : $controller = $this->createClassInstance($class);
+                    if (!is_object($controller))
+                    {
+                        return ErrorHandler::controllerNotFound($class);
+                    }else
+                    {
+                        method_exists($controller, $method) ? $response = call_user_func([$controller, $method]) : $response= ErrorHandler::methodNotFound($method, $class);
+                    }
+                }
+            }
             elseif($_SERVER['REQUEST_METHOD'] !== $routeData["method"])
             {
                 return ErrorHandler::failedRequestMethod($route, $routeData["method"], $_SERVER['REQUEST_METHOD']);
             }
             return $response ?? ErrorHandler::failedHandlerResponse();
         };
-
         $middlewareList = $routeData["middlewareList"] ?? null;
         return $this->checkParameters($middlewareList, $next);
     }
