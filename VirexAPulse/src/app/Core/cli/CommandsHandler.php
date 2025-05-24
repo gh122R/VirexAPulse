@@ -11,10 +11,11 @@ class CommandsHandler
     }
     public function makeController(string $name, string|null $type): string
     {
-        $path = CONTROLLERS_PATH . "/{$name}Controller.php";
+        $name = ucfirst($name) . 'Controller.php';
+        $path = CONTROLLERS_PATH . "/$name";
         if (file_exists($path))
         {
-            return "Контроллер {$path}.php уже существует!\n";
+            return "Контроллер {$name}.php уже существует!\n";
         }
         if($type === '--full')
         {
@@ -84,7 +85,7 @@ class CommandsHandler
         $path = MODELS_PATH . "/{$name}Models.php";
         if(file_exists($path))
         {
-            return '123';
+
         }
     }
 }
