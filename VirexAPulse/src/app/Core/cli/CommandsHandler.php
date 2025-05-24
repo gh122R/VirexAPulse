@@ -13,7 +13,7 @@ class CommandsHandler
     {
         $name = ucfirst($name) . 'Controller';
         $path = CONTROLLERS_PATH . "/$name";
-        if (file_exists($path) . '.php')
+        if (file_exists($path . '.php'))
         {
             return "Контроллер {$name}.php уже существует!\n";
         }
@@ -77,7 +77,7 @@ class CommandsHandler
             PHP;
         }
         file_put_contents(CONTROLLERS_PATH . "/$name.php", $template);
-        return "Контроллер {$path}.php создан\n";
+        return "Контроллер {$name}.php создан\n";
     }
 
     public function makeModel(string $name)
