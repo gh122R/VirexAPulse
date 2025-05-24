@@ -1,0 +1,31 @@
+#!/usr/bin/env php
+<?php
+
+$command = $argv[1] ?? null;
+
+switch ($command) {
+
+    case 'create':
+        $template = <<<PHP
+        <?php
+        
+        namespace App\Controllers;
+        
+        class Test
+        {
+            public function index()
+            {
+                // TODO: implement
+            }
+        }
+        PHP;
+        $path = __DIR__ . '/src/Controllers/Test.php';
+        var_dump($path);
+        file_put_contents($path, $template);
+        break;
+
+    default:
+        echo "Unknown command: $command\n";
+        echo "Available commands: route:cache, route:clear\n";
+        break;
+}

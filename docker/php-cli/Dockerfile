@@ -22,7 +22,7 @@ ARG GROUP_ID=1000
 RUN groupadd -g ${GROUP_ID} appuser || true \
     && useradd -u ${USER_ID} -g appuser -m appuser || true
 
-WORKDIR /var/www
+WORKDIR /var/www/VirexAPulse
 USER ${USER_ID}:${GROUP_ID}
 
 RUN composer config --global process-timeout 2000 \

@@ -47,7 +47,7 @@ services:
       - DB_HOST=mysql
       - COMPOSER_MEMORY_LIMIT=-1
     tty: true
-    working_dir: /var/www
+    working_dir: /var/www/VirexAPulse
     user: "${UID:-1000}:${GID:-1000}"
 
   mysql:
@@ -86,7 +86,7 @@ services:
       - "3000:3000"
     volumes:
       - ./:/var/www
-    working_dir: /var/www
+    working_dir: /var/www/VirexAPulse
     tty: true
 
 volumes:

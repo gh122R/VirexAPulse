@@ -23,7 +23,7 @@ RUN mv composer.phar /usr/local/bin/composer
 
 COPY ./conf.d /usr/local/etc/php/conf.d/
 
-WORKDIR /var/www
+WORKDIR /var/www/VirexAPulse
 
 
 
