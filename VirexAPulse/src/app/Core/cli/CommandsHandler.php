@@ -11,9 +11,9 @@ class CommandsHandler
     }
     public function makeController(string $name, string|null $type): string
     {
-        $name = ucfirst($name) . 'Controller.php';
+        $name = ucfirst($name) . 'Controller';
         $path = CONTROLLERS_PATH . "/$name";
-        if (file_exists($path))
+        if (file_exists($path) . '.php')
         {
             return "Контроллер {$name}.php уже существует!\n";
         }
@@ -23,7 +23,7 @@ class CommandsHandler
             <?php
             namespace src\Controllers;
             
-            class {$name}Controller
+            class $name
             {
                 public function index()
                 {
@@ -67,7 +67,7 @@ class CommandsHandler
             <?php
             namespace src\Controllers;
             
-            class {$name}Controller
+            class $name
             {
                 public function index()
                 {
@@ -76,7 +76,7 @@ class CommandsHandler
             }
             PHP;
         }
-        file_put_contents(CONTROLLERS_PATH . "/$name", $template);
+        file_put_contents(CONTROLLERS_PATH . "/$name.php", $template);
         return "Контроллер {$path}.php создан\n";
     }
 
