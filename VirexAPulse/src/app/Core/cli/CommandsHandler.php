@@ -76,7 +76,7 @@ class CommandsHandler
             }
             PHP;
         }
-        file_put_contents(CONTROLLERS_PATH . "/$name" ."Controller.php", $template);
+        file_put_contents(CONTROLLERS_PATH . "/$name", $template);
         return "Контроллер {$path}.php создан\n";
     }
 
