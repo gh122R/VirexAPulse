@@ -18,7 +18,8 @@
         "phpunit/phpunit": "^12.1"
     },
     "require": {
+        "firebase/php-jwt": "^6.11",
         "illuminate/database": "^12.11",
-      "ext-memcached": "*"
+        "vlucas/phpdotenv": "^5.6"
     }
 }
