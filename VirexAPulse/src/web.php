@@ -20,8 +20,7 @@ use src\Controllers\HomeController;
 Route::get('/w', fn()=> 'welcome');
 Route::get('/home/{id}', [HomeController::class, 'index']);
 Route::view('/', 'welcome');
-Route::get('/test', fn()=> 'test', fn($next) => $next());
-
+Route::get('/test');
 /*
  * +-----------------------------------------------------------------------------------------------------------------------------------+
  * | Если вы регистрируете маршрут с помощью <<<Route::get>>> или <<<Route::post>>>, то                                                |

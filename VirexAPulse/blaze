@@ -5,7 +5,6 @@ use App\Core\Facades\Command;
 
 require_once __DIR__ . '/src/app/Core/Bootstrap/bootstrap.php';
 
-
 $command = strtolower($argv[1] ?? null);
 $name = $argv[2] ?? null;
 $type = $argv[3] ?? null;
@@ -25,6 +24,10 @@ switch ($command) {
 
     case null:
         echo "Введите команду🤒.\n";
+        break;
+
+    case '--help':
+        echo Command::getCommandsList();
         break;
 
     default:

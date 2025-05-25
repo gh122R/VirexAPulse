@@ -80,12 +80,38 @@ class CommandsHandler
         return "Контроллер {$name}.php создан\n";
     }
 
-    public function makeModel(string $name)
+    public function makeModel(string $name): string
     {
-        $path = MODELS_PATH . "/{$name}Models.php";
+        $name = ucfirst($name);
+        $path = MODELS_PATH . "/$name.php";
         if(file_exists($path))
         {
-
+            return "Модель {$name}.php уже существует!\n";
+        }else
+        {
+            $template = <<<PHP
+            <?php
+            namespace src\Models;
+            use Illuminate\Database\Eloquent\Model;
+            class $name extends Model
+            {
+                protected \$table = 'ваша таблица'; //например protected \$table = 'users';
+                /** 
+                * protected @fillable = [] здесь указываются столбцы таблицы, которые можно изменять,
+                * либо используйте:  
+                 protected @guarded = [], чтобы каждый раз не вводить в @fillable столбцы
+                * Например: protected @fillable = ['username', 'user_password', 'email'], либо
+                *  @guarded = []
+                 */
+            }
+            PHP;
         }
+        file_put_contents(MODELS_PATH . "/{$name}.php", $template);
+        return "Модель {$name}.php создана\n";
+    }
+
+    public function getCommandsList()
+    {
+        return "==========================Controllers==================================\n php blaze make:controller Test - позволяет создать контроллер в папке Controllers,\n с именем, которое вы указали\n Также, можно указать --full, для автоматического заполнения шаблонами методов в контроллере.\n Тогда запрос должен выглядеть так:\n php blaze make:controller Test --full\n======================================================================\n==========================Models======================================\n php blaze make:model Test - позволяет создать модель в папке Models\n======================================================================\n";
     }
 }
