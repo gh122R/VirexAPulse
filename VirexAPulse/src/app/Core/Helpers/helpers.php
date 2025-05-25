@@ -53,7 +53,7 @@ if(!function_exists('redirect'))
 
 if(!function_exists('unsetMessage'))
 {
-    function unsetMessage(): never
+    function unsetMessage(): void
     {
         if(isset($_SESSION['message']))
         {
@@ -63,6 +63,5 @@ if(!function_exists('unsetMessage'))
                 unset($_SESSION['message_expire']);
             }
         }
-        exit();
     }
 }
