@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Core\Facades\Route;
 
+session_start();
+
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 require_once dirname(__DIR__) . '/src/app/config.php';
 require_once dirname(__DIR__) . '/src/web.php';

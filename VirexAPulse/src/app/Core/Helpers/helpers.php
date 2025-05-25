@@ -39,9 +39,30 @@ if(!function_exists('error'))
 
 if(!function_exists('redirect'))
 {
-    function redirect(string $url): never
+    function redirect(string $url, array $data = [], int $messageLifetime = 5): never
     {
+        if(!empty($data))
+        {
+            $_SESSION['message'] = $data;
+            $_SESSION['message_expire'] = time()+$messageLifetime;
+        }
         header('Location: ' . $url);
+        exit();
+    }
+}
+
+if(!function_exists('unsetMessage'))
+{
+    function unsetMessage(): never
+    {
+        if(isset($_SESSION['message']))
+        {
+            if(time() > $_SESSION['message_expire'])
+            {
+                unset($_SESSION['message']);
+                unset($_SESSION['message_expire']);
+            }
+        }
         exit();
     }
 }

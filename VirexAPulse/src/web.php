@@ -20,7 +20,8 @@ use src\Controllers\HomeController;
 Route::get('/w', fn()=> 'welcome');
 Route::get('/home/{id}', [HomeController::class, 'index']);
 Route::view('/', 'welcome');
-Route::get('/test');
+Route::get('/test', fn() => view('test'));
+Route::get('/test2', fn() => redirect('/test', ['error' => 405], 10));
 /*
  * +-----------------------------------------------------------------------------------------------------------------------------------+
  * | Если вы регистрируете маршрут с помощью <<<Route::get>>> или <<<Route::post>>>, то                                                |
