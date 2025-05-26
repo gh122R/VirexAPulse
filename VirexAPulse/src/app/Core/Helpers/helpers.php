@@ -51,6 +51,19 @@ if(!function_exists('redirect'))
     }
 }
 
+if(!function_exists('getMessage'))
+{
+    function getMessage(string $key = '')
+    {
+        unsetMessage();
+        if(isset($key))
+        {
+            return $_SESSION['message'][$key];
+        }
+        return $_SESSION['message'] ?? null;
+    }
+}
+
 if(!function_exists('unsetMessage'))
 {
     function unsetMessage(): void

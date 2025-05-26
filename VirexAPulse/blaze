@@ -22,6 +22,10 @@ switch ($command) {
         echo Command::makeModel($name);
         break;
 
+    case 'test':
+        Command::test();
+        break;
+
     case null:
         echo "Введите команду🤒.\n";
         break;

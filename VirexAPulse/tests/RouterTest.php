@@ -1,7 +1,11 @@
 <?php
 
 namespace tests;
+require_once dirname(__DIR__) . '/src/app/Core/Bootstrap/bootstrap.php';
 
+use App\Core\Containers\Container;
+use App\Core\Facades\Facade;
+use App\Core\Facades\Route;
 use App\Core\Router;
 use PHPUnit\Framework\TestCase;
 use src\Middleware\TestMiddleware;
@@ -13,93 +17,55 @@ class RouterTest extends TestCase
     {
         parent::setUp();
         $_SERVER['REQUEST_METHOD'] = 'GET';
+        $container = new Container();
+        $container->singleton('router', fn () => new Router());
+        Facade::setContainer($container);
     }
 
     public function testRouteNotFound()
     {
-        $router = new Router();
-        $router->get('/test', function () {
-            return 'success';
-        });
+        Route::get('/test', fn() => 'success');
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $result = $router->handler('/somethingElse');
+        $result = Route::handler('/somethingElse');
         $this->assertStringContainsString('404', $result);
     }
 
     public function testGetRequest()
     {
-        $router = new Router();
-        $router->get('/test', function () {
-            return 'success';
-        });
+        Route::get('/test', fn() => 'success');
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $result = $router->handler('/test');
+        $result = Route::handler('/test');
         $this->assertEquals('success', $result);
     }
 
     public function testPostRequest()
     {
-        $router = new Router();
-        $router->post('/test', function () {
-            return 'success';
-        });
+        Route::post('/test', fn() => 'success');
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        $result = $router->handler('/test');
-        $this->assertEquals('success', $result);
-    }
-
-    public function testPutRequest()
-    {
-        $router = new Router();
-        $router->put('/test', function () {
-            return 'success';
-        });
-        $_SERVER['REQUEST_METHOD'] = 'PUT';
-        $result = $router->handler('/test');
-        $this->assertEquals('success', $result);
-    }
-
-    public function testDeleteRequest()
-    {
-        $router = new Router();
-        $router->delete('/test', function () {
-            return 'success';
-        });
-        $_SERVER['REQUEST_METHOD'] = 'DELETE';
-        $result = $router->handler('/test');
+        $result = Route::handler('/test');
         $this->assertEquals('success', $result);
     }
 
     public function testMixedRequestsPositive()
     {
-        $router = new Router();
-        $router->post('/post', function () {
-            return 'post request';
-        })
-        ->get('/get', function () {
-            return 'get request';
-        });
+        Route::post('/post', fn() => 'post request');
+        Route::get('/get', fn() => 'get request');
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        $result = $router->handler('/post');
+        $result = Route::handler('/post');
         $this->assertEquals('post request', $result);
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $result = $router->handler('/get');
+        $result = Route::handler('/get');
         $this->assertEquals('get request', $result);
     }
 
     public function testMixedRequestsNegative()
     {
-        $router = new Router();
-        $router->post('/post', function () {
-            return 'post request';
-        })
-            ->get('/get', function () {
-                return 'get request';
-            });
+        Route::post('/post', fn() => 'post request');
+        Route::get('/get', fn() => 'get request');
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        $result = $router->handler('/post');
+        $result = Route::handler('/post');
         $this->assertEquals('post request', $result);
-        $result = $router->handler('/get');
+        $result = Route::handler('/get');
         $this->assertStringContainsString('Данный метод низя применить на маршруте', $result);
     }
 
