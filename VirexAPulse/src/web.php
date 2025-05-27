@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/app/Core/Bootstrap/bootstrap.php";
 
+use App\Core\Facades\Environment\Manager;
 use App\Core\Facades\Route;
 use src\Controllers\HomeController;
 
@@ -20,14 +21,13 @@ use src\Controllers\HomeController;
 Route::get('/w', fn()=> 'welcome');
 Route::get('/home/{id}', [HomeController::class, 'index']);
 Route::view('/', 'welcome');
-Route::get('/test', fn() => view('test', ['Оика'=> '123']));
-
+Route::get('/test', fn() => view('test', ['Пример' => '123']));
 Route::get('/test2', fn() => redirect('/test', ['error' => 123],1));
-
-Route::get('/test4', function(){
-    $env = new \App\Core\Environment\EnvLoader();
-    dd($env->load());
+Route::get('/test3',function ()
+{
+ pd(Manager::get(['driver', 'password', 'username']));
 });
+
 
 /*
  * +-----------------------------------------------------------------------------------------------------------------------------------+

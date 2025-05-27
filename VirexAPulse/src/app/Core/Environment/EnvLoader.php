@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Core\Environment;
 
 use Dotenv\Dotenv;
@@ -11,5 +13,10 @@ class EnvLoader
     {
         $this->dotenv = Dotenv::createImmutable($path);
         $this->dotenv->load();
+        return true;
+    }
+    public function Dotenv(): Dotenv
+    {
+        return $this->dotenv;
     }
 }
