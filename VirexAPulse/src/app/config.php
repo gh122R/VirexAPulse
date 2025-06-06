@@ -3,8 +3,6 @@
 use App\Core\Facades\Environment\Manager as EnvironmentManager;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-require_once __DIR__ . '/Core/Bootstrap/bootstrap.php';
-
 /*
  * +-------------------------+
  * |   Заголовки для cors   |
@@ -42,11 +40,11 @@ define('SRC_PATH', dirname(__DIR__, 2) . '/src');
 
 $capsule = new Capsule;
 $capsule->addConnection([
-    'driver' => EnvironmentManager::get('driver'),
-    'host' => EnvironmentManager::get('host'),
-    'database' => EnvironmentManager::get('database'),
-    'username' => EnvironmentManager::get('username'),
-    'password' => EnvironmentManager::get('password'),
+    'driver' => 'mysql',
+    'host' => 'mysql',
+    'database' => 'my_db',
+    'username' => 'user',
+    'password' => 'password',
     'charset' => 'utf8',
     'collation' => 'utf8_unicode_ci',
 ]);

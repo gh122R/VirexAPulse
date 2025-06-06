@@ -77,7 +77,7 @@ if(!function_exists('redirect'))
 
 if(!function_exists('getMessage'))
 {
-    function getMessage(string $key = '')
+    function getMessage(string $key = ''): null|string
     {
         unsetMessage();
         if(isset($_SESSION['message']))

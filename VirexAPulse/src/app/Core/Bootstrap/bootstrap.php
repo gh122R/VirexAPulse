@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Core\cli\CommandsHandler;
+
 use App\Core\Containers\Container;
 use App\Core\Environment\EnvLoader;
 use App\Core\Environment\EnvManager;

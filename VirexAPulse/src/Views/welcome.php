@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    <a href="/noneDoc" class="mt-5 inline-block px-3 py-2 bg-transparent text-white rounded-xl text-md hover:text-gray-400 transition">
+    <a href="/doc" class="mt-5 inline-block px-3 py-2 bg-transparent text-white rounded-xl text-md hover:text-gray-400 transition">
         Перейти к документации ->
     </a>
 </div>
