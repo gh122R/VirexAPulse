@@ -3,6 +3,7 @@
 
 use App\Core\Facades\Command;
 
+require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/src/app/Core/Bootstrap/bootstrap.php';
 
 $command = strtolower($argv[1] ?? null);
