@@ -1,17 +1,22 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Core\Routing;
 
 class RouteRegister
 {
-    protected $routes = [];
-    protected $dynamicRoutes = [];
+    protected array $routes = [];
+    protected array $dynamicRoutes = [];
 
-    public function getRoutes()
+    private function getRoutes(): array
     {
-        return $this->routes;
+        return [
+            'routes' => $this->routes,
+            'dynamicRoutes' => $this->dynamicRoutes,
+        ];
     }
-    public function registerRoute(string $route, array|callable|string $action ,string $method, array|callable $middleware = []): void
+    public function __invoke(string $route, array|callable|string $action ,string $method, array|callable $middleware = []): array
     {
         if(is_string($action))
         {
@@ -39,5 +44,7 @@ class RouteRegister
                 'middlewareList' => $middleware
             ];
         }
+
+        return $this->getRoutes();
     }
 }

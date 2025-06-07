@@ -27,7 +27,7 @@ class TestMiddleware
         return $next();
     }
 
-    public function empty(callable|string $next):callable|string
+    public function empty(callable|string $next):callable|string|int
     {
         return $next();
     }

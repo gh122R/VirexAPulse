@@ -115,7 +115,7 @@ use App\Core\Facades\Route;
 
 session_start();
 require_once dirname(__DIR__) . '/vendor/autoload.php';
-require_once dirname(__DIR__) . '/src/app/config.php';
+require_once dirname(__DIR__) . '/src/app/db.php';
 require_once dirname(__DIR__) . '/src/web.php';
 
 echo Route::handler($_SERVER['REQUEST_URI']);

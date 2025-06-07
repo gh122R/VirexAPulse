@@ -5,6 +5,7 @@ require_once __DIR__ . "/app/Core/Bootstrap/bootstrap.php";
 use App\Core\Facades\Environment\Manager as EnvironmentManager;
 use App\Core\Facades\Route;
 use src\Controllers\HomeController;
+use src\Middleware\TestMiddleware;
 
 /*
  * +-------------------------------------------------------------------------------------------------------------+
@@ -24,6 +25,10 @@ Route::get('/test-view', fn() => view('test', ['Variable' => '123']));
 Route::get('/redirect', fn() => redirect('/test-view', ['message' => 'Hi!'],1));
 Route::get('/env', fn () => pd(EnvironmentManager::get(['username', 'password', 'driver'])));
 Route::get('/doc', fn () => error('Документации пока нет :(', description: 'Наверное, скоро будет'));
+Route::get('/middlewares', [HomeController::class, 'index'], [
+    [TestMiddleware::class, 'forTest'],
+    [TestMiddleware::class, 'empty']
+]);
 
 /*
  * +-----------------------------------------------------------------------------------------------------------------------------------+

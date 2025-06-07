@@ -7,7 +7,7 @@ namespace tests;
 use App\Core\Containers\Container;
 use App\Core\Facades\Facade;
 use App\Core\Facades\Route;
-use App\Core\Router;
+use App\Core\Routing\OldRouter;
 use PHPUnit\Framework\TestCase;
 use src\Middleware\TestMiddleware;
 
@@ -19,7 +19,7 @@ class RouterTest extends TestCase
         parent::setUp();
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $container = new Container();
-        $container->singleton('router', fn () => new Router());
+        $container->singleton('router', fn () => new OldRouter());
         Facade::setContainer($container);
     }
 
@@ -72,7 +72,7 @@ class RouterTest extends TestCase
 
     public function testRequestMethod()
     {
-        $router = new Router();
+        $router = new OldRouter();
         $router->post('/test', function () {
             return 'success';
         });
@@ -83,7 +83,7 @@ class RouterTest extends TestCase
 
     public function testMiddlewarePositive()
     {
-        $router = new Router();
+        $router = new OldRouter();
         $router->get('/test', function () { return 'success';}, [[TestMiddleware::class, 'index']]);
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $result = $router->handler('/test');
@@ -92,7 +92,7 @@ class RouterTest extends TestCase
 
     public function testMiddlewareNegative()
     {
-        $router = new Router();
+        $router = new OldRouter();
         $router->get('/test', function () { return 'success';}, [[TestMiddleware::class, 'forTest']]);
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $result = $router->handler('/test');
@@ -102,7 +102,7 @@ class RouterTest extends TestCase
 
     public function testMiddlewareMixed()
     {
-        $router = new Router();
+        $router = new OldRouter();
         $router->get('/test', function (){
             return 'test';
         },

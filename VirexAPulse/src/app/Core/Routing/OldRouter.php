@@ -1,14 +1,14 @@
 <?php
 
 declare(strict_types = 1);
-namespace App\Core;
+namespace App\Core\Routing;
 
 
 use App\Core\Helpers\ErrorHandler;
 use App\Core\Helpers\View;
 use App\Core\Interfaces\RouterInterface;
 
-class Router implements RouterInterface
+class OldRouter implements RouterInterface
 {
     private array $routes;
     private array $dynamicRoutes;
@@ -132,21 +132,12 @@ class Router implements RouterInterface
 
     private function render(string $view): string
     {
-        $viewPath = VIEWS_PATH . $view ?? null;
         if(class_exists(View::class))
         {
             return View::render($view);
         }else
         {
-            ob_start();
-            if(file_exists($viewPath . '.html'))
-            {
-                include $viewPath . '.html';
-            }elseif(file_exists($viewPath . '.php'))
-            {
-                include $viewPath . '.php';
-            }
-            return ob_get_clean();
+            return error('Класс View не найден!', description: 'Работа роутера невозможна без класса View');
         }
     }
 
