@@ -53,7 +53,23 @@ docker compose exec node npm run dev
   Важно! Если вы хотите собрать стили (например, чтобы выложить проект на хостинг), введите:
 ```
  docker compose exec node npm run build 
+```  
+
+* Если вы используете windows, то на 3-м шаге могут возникнуть проблемы с npm, тогда введите:
+
 ```
+docker compose exec node rm -rf node_modules 
+```
+
+``` 
+docker compose exec node npm install
+```
+
+```
+docker compose exec node npm run dev
+```
+
+> После можете переходить к 4 пункту.
 
 4) Сервер работает по адресу: ```localhost:8080```.
 
