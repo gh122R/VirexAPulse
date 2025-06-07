@@ -1,7 +1,8 @@
 <?php
 
 namespace tests;
-require_once dirname(__DIR__) . '/src/app/Core/Bootstrap/bootstrap.php';
+
+
 
 use App\Core\Containers\Container;
 use App\Core\Facades\Facade;

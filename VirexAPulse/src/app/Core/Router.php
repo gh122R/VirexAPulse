@@ -36,7 +36,7 @@ class Router implements RouterInterface
         return $this;
     }
 
-    public function view(string $route, string $path):self
+    public function view(string $route, string $path): self
     {
         $this->registerRoute($route, $path, 'GET');
         return $this;
@@ -72,13 +72,6 @@ class Router implements RouterInterface
         }
     }
 
-/*    private function errorCatcher()
-    {
-        if (class_exists(ErrorHandler::class))
-        {
-
-        }
-    }*/
 
     private function checkParameters(callable|array $parameters, callable $next): mixed
     {
@@ -188,7 +181,7 @@ class Router implements RouterInterface
      * | Всё это происходит при вызове замыкания $next(), но мы не вызываем её здесь сразу на прямую, почему?                        |
      * | Это сделано для проверки заданных middleware'ов, вместо $next() мы возвращаем вызов метода checkParameters,                 |
      * | который проходит по цепочке middleware' ов и в конечном итоге вызывает $next().                                             |
-     *  +-----------------------------------------------------------------------------------------------------------------------------+
+     *  +----------------------------------------------------------------------------------------------------------------------------+
     */
     public function handler(string $uri): mixed
     {

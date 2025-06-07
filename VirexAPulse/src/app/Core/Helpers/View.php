@@ -15,7 +15,6 @@ class View implements ViewInterface
     */
     public static function render(string $view, array $data = []): string
     {
-
         extract($data);
         ob_start();
         $path =  BASE_PATH . '/src/Views/' . $view . '.html';

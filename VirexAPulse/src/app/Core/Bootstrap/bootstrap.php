@@ -24,7 +24,7 @@ $container = new Container();
 $container->singleton('router', fn() => new Router());
 $container->singleton('command', fn() => new CommandsHandler());
 $container->singleton('register', fn() => new RouteRegister());
-$container->singleton('EnvLoader', fn() => new EnvLoader(dirname(__DIR__,4)));
+$container->singleton('EnvLoader', fn() => new EnvLoader(BASE_PATH));
 $container->singleton('EnvValidator', fn() => new EnvValidator());
 $container->singleton('EnvManager', fn() => new EnvManager());
 Facade::setContainer($container);

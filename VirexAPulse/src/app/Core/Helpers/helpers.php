@@ -5,6 +5,14 @@ declare(strict_types=1);
 use App\Core\Helpers\ErrorHandler;
 use App\Core\Helpers\View;
 
+define('BASE_PATH', dirname(__DIR__, 4));
+define('VIEWS_PATH', dirname(__DIR__, 4) . '/src/Views');
+define('CONTROLLERS_PATH', dirname(__DIR__, 4) . '/src/Controllers');
+define('MODELS_PATH', dirname(__DIR__, 4) . '/src/Models');
+define('MIDDLEWARE_PATH', dirname(__DIR__, 4) . '/src/Middleware');
+define('APP_PATH', dirname(__DIR__, 4) . '/src/app');
+define('SRC_PATH', dirname(__DIR__, 4) . '/src');
+
 if (!function_exists('dd'))
 {
     function dd(...$args): never
