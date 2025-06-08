@@ -12,10 +12,10 @@ class TestMiddleware
      *  +---------------------------------------------------------------------------------------------------------------------------+
      *  | Вы можете проверить работоспособность этого middleware' а, раскомментировав код ниже, и убрав последний "return $next();" |
      *  | Каждый метод middleware' а должен принимать callable $next и вызывать её в конце return $next().                          |
-*       | $next() нужен для перехода к следующему middleware'у или контроллеру                                                     |
+*       | $next() нужен для перехода к следующему middleware'у или контроллеру                                                      |
      *  +---------------------------------------------------------------------------------------------------------------------------+
      * */
-    public function index(callable|string $next):callable|string
+    public function index(callable|string $next): mixed
     {
 /*        if (!empty($_COOKIE['token']))
         {
@@ -27,12 +27,12 @@ class TestMiddleware
         return $next();
     }
 
-    public function empty(callable|string $next):callable|string|int
+    public function empty(callable|string $next): mixed
     {
         return $next();
     }
 
-    public function forTest(callable $next):callable|string
+    public function forTest(callable $next): mixed
     {
         if (!empty($_COOKIE['token']))
         {

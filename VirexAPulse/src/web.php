@@ -19,6 +19,8 @@ use src\Middleware\TestMiddleware;
  * +-------------------------------------------------------------------------------------------------------------+
  * */
 
+
+
 Route::view('/', 'welcome');
 Route::get('/home/{id}', [HomeController::class, 'index']);
 Route::get('/test-view', fn() => view('test', ['Variable' => '123']));

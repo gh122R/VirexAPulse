@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace App\Core\Routing;
 
+use App\Core\Helpers\ErrorHandler;
+use App\Core\Helpers\View;
 use App\Core\Interfaces\RouterInterface;
 
 class Router implements RouterInterface
@@ -20,6 +22,13 @@ class Router implements RouterInterface
 
     public function __construct()
     {
+      $this->classExistChecker([
+            InstanceCreator::class,
+            RouteRegister::class,
+            ProcessRequest::class,
+            DynamicRoutesHandler::class,
+            Render::class,
+        ]);
         $this->routes = [];
         $this->dynamicRoutes = [];
         $this->instanceCreator = new InstanceCreator();
@@ -29,6 +38,23 @@ class Router implements RouterInterface
         $this->render = new Render();
     }
 
+
+    private function classExistChecker(array $classes): void
+    {
+        foreach ($classes as $class)
+        {
+            if (!class_exists($class))
+            {
+                if (!class_exists(ErrorHandler::class))
+                {
+                    echo "Класс <b>$class</b> не найден!  <br> <b>$class</b> необходим для функционирования роутера";
+                    exit();
+                }
+                echo error("Класс $class не найден!", description: "$class необходим для функционирования роутера");
+                exit();
+            }
+        }
+    }
 
     public function get(string $route, array|callable $action, array|callable $middleware = []): self
     {

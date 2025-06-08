@@ -8,7 +8,7 @@ require_once __DIR__ . '/src/app/Core/Bootstrap/bootstrap.php';
 
 $command = strtolower($argv[1] ?? null);
 $name = $argv[2] ?? null;
-$type = $argv[3] ?? null;
+$flag = $argv[3] ?? null;
 
 switch ($command) {
     case 'serve':
@@ -16,7 +16,7 @@ switch ($command) {
         break;
 
     case 'make:controller':
-        echo Command::makeController($name, $type);
+        echo Command::makeController($name, $flag);
         break;
 
     case 'make:model':
