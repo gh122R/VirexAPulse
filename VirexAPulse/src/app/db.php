@@ -1,12 +1,14 @@
 <?php
 
-use App\Core\Facades\Environment\Manager as EnvironmentManager;
+require_once __DIR__ . '/Core/Bootstrap/bootstrap.php';
+
 use Illuminate\Database\Capsule\Manager as Capsule;
-require_once APP_PATH . '/Core/Bootstrap/bootstrap.php';
+use App\Core\Facades\Environment\Manager as EnvironmentManager;
+
 /*
  * +---------------------------+
- * | Подключение eloquent orm |
- * +--------------------------+
+ * | Подключение eloquent orm  |
+ * +---------------------------+
  * */
 
 $capsule = new Capsule;

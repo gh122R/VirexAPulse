@@ -1,10 +1,10 @@
 #!/usr/bin/env php
 <?php
 
-use App\Core\Facades\Command;
-
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/src/app/Core/Bootstrap/bootstrap.php';
+require_once APP_PATH . '/Core/Bootstrap/bootstrap.php';
+
+use App\Core\Facades\Command;
 
 $command = strtolower($argv[1] ?? null);
 $name = $argv[2] ?? null;
@@ -21,10 +21,6 @@ switch ($command) {
 
     case 'make:model':
         echo Command::makeModel($name);
-        break;
-
-    case 'test':
-        Command::test();
         break;
 
     case null:

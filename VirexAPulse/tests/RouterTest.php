@@ -2,8 +2,6 @@
 
 namespace tests;
 
-
-
 use App\Core\Containers\Container;
 use App\Core\Facades\Facade;
 use App\Core\Facades\Route;
