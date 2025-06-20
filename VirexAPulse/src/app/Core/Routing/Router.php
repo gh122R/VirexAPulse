@@ -11,6 +11,7 @@ class Router implements RouterInterface
 {
     private array $routes;
     private array $dynamicRoutes;
+    private array $groupData = [];
 
     private InstanceCreator $instanceCreator;
     private RouteRegister $routeRegister;
@@ -75,6 +76,10 @@ class Router implements RouterInterface
     {
         $routes = ($this->routeRegister)($route, $path, 'GET');
         $this->routes = array_merge($routes['routes']);
+        if(!empty($this->groupData))
+        {
+            dd($this->groupData);
+        }
         return $this;
     }
 
@@ -89,26 +94,18 @@ class Router implements RouterInterface
         }
         if(array_key_exists('controller', $parameters))
         {
-            count($parameters['controller']) === 2 ? $middleware = [$parameters['controller'][0], $parameters['controller'][1]] : $middleware = [$parameters['controller'][0]];
+            count($parameters['controller']) === 2 ? $controller = [$parameters['controller'][0], $parameters['controller'][1]] : $controller = [$parameters['controller'][0]];
         }
         if(array_key_exists('prefix', $parameters))
         {
             $prefix = $parameters['prefix'];
         }
-        $data = [
+        $this->groupData = [
             'prefix' => $prefix,
             'middleware' => $middleware,
             'controller' => $controller,
         ];
-        if(is_array($routes))
-        {
-            $routes = fn()=>$routes;
-            /*return $routes();*/
-        }elseif(is_callable($routes))
-        {
-            /*return $routes();*/
-        }
-        dd($data);
+        $routes();
     }
 
     public function handler(string $uri)
