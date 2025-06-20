@@ -30,9 +30,12 @@ Route::get('/middlewares', [HomeController::class, 'index'], [
     [TestMiddleware::class, 'empty']
 ]);
 
-Route::group(['middleware' => ['web'], 'prefix' => 'name123'], function () {
-    Route::view('/t', 'test');
-    Route::view('/w', 'home');
+Route::group([
+    'middleware' => [[TestMiddleware::class, 'index'], [TestMiddleware::class, 'forTest']],
+    'prefix' => 'giga',
+    'controller' => HomeController::class], function () {
+    Route::get('/name', 'index');
+    Route::get('/{name}', 'index');
 });
 
 /*

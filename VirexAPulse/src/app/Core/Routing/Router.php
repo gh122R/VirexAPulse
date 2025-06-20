@@ -18,7 +18,6 @@ class Router implements RouterInterface
     private ProcessRequest $processRequest;
     private Render $render;
     private DynamicRoutesHandler $dynamicRoutesHandler;
-    private Handler $handler;
 
     public function __construct()
     {
@@ -39,7 +38,7 @@ class Router implements RouterInterface
     }
 
 
-    private function classExistChecker(array $classes): void
+    private function classExistChecker(array $classes = []): void
     {
         foreach ($classes as $class)
         {
@@ -56,45 +55,54 @@ class Router implements RouterInterface
         }
     }
 
-    public function get(string $route, array|callable $action, array|callable $middleware = []): self
+    public function get(string $route, array|callable|string $action = [], array|callable $middleware = []): self
     {
-        $routes = ($this->routeRegister)($route, $action, 'GET', $middleware);
-        $this->routes = array_merge($routes['routes']);
-        $this->dynamicRoutes = array_merge($routes['dynamicRoutes']);
+        $this->setRoute($route, $action, 'GET', $middleware);
         return $this;
     }
 
-    public function post(string $route, array|callable $action, array|callable $middleware = []): self
+    public function post(string $route, array|callable|string $action = [], array|callable $middleware = []): self
     {
-        $routes = ($this->routeRegister)($route, $action, 'POST', $middleware);
-        $this->routes = array_merge($routes['routes']);
-        $this->dynamicRoutes = array_merge($routes['dynamicRoutes']);
+        $this->setRoute($route, $action, 'POST',$middleware);
         return $this;
     }
 
     public function view(string $route, string $path): self
     {
-        $routes = ($this->routeRegister)($route, $path, 'GET');
-        $this->routes = array_merge($routes['routes']);
         if(!empty($this->groupData))
         {
-            dd($this->groupData);
+            if(!empty($this->groupData['prefix'])) $route = '/' . $this->groupData['prefix'] . $route;
         }
+        $routes = ($this->routeRegister)($route, $path, 'GET');
+        $this->routes = array_merge($routes['routes']);
         return $this;
     }
 
-    public function group(array $parameters, callable|array $routes)
+    public function group(array $parameters, callable $routes): void
     {
         $middleware = null;
         $controller = null;
         $prefix = null;
         if (array_key_exists('middleware', $parameters))
         {
-            count($parameters['middleware']) === 2 ? $middleware = [$parameters['middleware'][0], $parameters['middleware'][1]] : $middleware = [$parameters['middleware'][0]];
+            if(is_array($parameters['middleware'][0]))
+            {
+                count($parameters['middleware']) === 2 ? $middleware = [$parameters['middleware'][0], $parameters['middleware'][1]] : $middleware = [$parameters['middleware'][0]];
+            }else
+            {
+                count($parameters['middleware']) === 2 ? $middleware = [[$parameters['middleware'][0], $parameters['middleware'][1]]] : $middleware = [[$parameters['middleware'][0]]];
+            }
         }
         if(array_key_exists('controller', $parameters))
         {
-            count($parameters['controller']) === 2 ? $controller = [$parameters['controller'][0], $parameters['controller'][1]] : $controller = [$parameters['controller'][0]];
+            if (is_array($parameters['controller']))
+            {
+                count($parameters['controller']) === 2 ? $controller = [$parameters['controller'][0], $parameters['controller'][1]] : $controller = [$parameters['controller'][0]];
+            }
+            if(is_string($parameters['controller']))
+            {
+                $controller = $parameters['controller'];
+            }
         }
         if(array_key_exists('prefix', $parameters))
         {
@@ -106,17 +114,41 @@ class Router implements RouterInterface
             'controller' => $controller,
         ];
         $routes();
+        unset($this->groupData);
+    }
+
+    private function setRoute(string $route, array|callable|string $action, string $method ,array|callable $middleware = []): void
+    {
+        if(!empty($this->groupData))
+        {
+            if(!empty($this->groupData['prefix'])) $route =  '/' . $this->groupData['prefix'] . $route;
+            if(!empty($this->groupData['controller']))
+            {
+                if(is_array($action))
+                {
+                    $action = $this->groupData['controller'];
+                }
+                if(is_string($action))
+                {
+                    $action = [$this->groupData['controller'], $action];
+                }
+            }
+            if(!empty($this->groupData['middleware'])) $middleware = $this->groupData['middleware'];
+        }
+        $routes = ($this->routeRegister)($route, $action, $method, $middleware);
+        $this->routes = array_merge($routes['routes']);
+        $this->dynamicRoutes = array_merge($routes['dynamicRoutes']);
     }
 
     public function handler(string $uri)
     {
-        $this->handler = new Handler($this->render,
+        $handler = new Handler($this->render,
             $this->dynamicRoutesHandler,
             $this->instanceCreator,
             $this->processRequest,
             $this->routes,
             $this->dynamicRoutes);
 
-        return ($this->handler)($uri);
+        return ($handler)($uri);
     }
 }
