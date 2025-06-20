@@ -30,6 +30,11 @@ Route::get('/middlewares', [HomeController::class, 'index'], [
     [TestMiddleware::class, 'empty']
 ]);
 
+Route::group(['middleware' => ['web'], 'prefix' => 'name123'], function () {
+    Route::view('/t', 'test');
+    Route::view('/w', 'home');
+});
+
 /*
  * +-----------------------------------------------------------------------------------------------------------------------------------+
  * | Если вы регистрируете маршрут с помощью <<<Route::get>>> или <<<Route::post>>>, то                                                |

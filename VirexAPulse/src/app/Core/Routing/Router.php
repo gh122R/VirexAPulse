@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace App\Core\Routing;
 
 use App\Core\Helpers\ErrorHandler;
-use App\Core\Helpers\View;
 use App\Core\Interfaces\RouterInterface;
 
 class Router implements RouterInterface
@@ -78,6 +77,40 @@ class Router implements RouterInterface
         $this->routes = array_merge($routes['routes']);
         return $this;
     }
+
+    public function group(array $parameters, callable|array $routes)
+    {
+        $middleware = null;
+        $controller = null;
+        $prefix = null;
+        if (array_key_exists('middleware', $parameters))
+        {
+            count($parameters['middleware']) === 2 ? $middleware = [$parameters['middleware'][0], $parameters['middleware'][1]] : $middleware = [$parameters['middleware'][0]];
+        }
+        if(array_key_exists('controller', $parameters))
+        {
+            count($parameters['controller']) === 2 ? $middleware = [$parameters['controller'][0], $parameters['controller'][1]] : $middleware = [$parameters['controller'][0]];
+        }
+        if(array_key_exists('prefix', $parameters))
+        {
+            $prefix = $parameters['prefix'];
+        }
+        $data = [
+            'prefix' => $prefix,
+            'middleware' => $middleware,
+            'controller' => $controller,
+        ];
+        if(is_array($routes))
+        {
+            $routes = fn()=>$routes;
+            /*return $routes();*/
+        }elseif(is_callable($routes))
+        {
+            /*return $routes();*/
+        }
+        dd($data);
+    }
+
     public function handler(string $uri)
     {
         $this->handler = new Handler($this->render,
