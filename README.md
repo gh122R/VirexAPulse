@@ -10,7 +10,6 @@
 
 
 VirexAPulse - это расширенная версия [VirexA](https://github.com/gh122R/VirexA)
-![11](https://yapx.ru/album/ZV6w7)
 
 ### Почему VirexA?
 Потому что писать backend на PHP теперь станет быстро и удобно! VirexA предлагает Laravel-подобную маршрутизацию, но без тяжеловесных зависимостей.
@@ -195,6 +194,60 @@ Route::get('/home/{id}/profile/{name}', [HomeController::class, 'index']);
 ]
 ```
 
+## Группы маршрутов
+
+Пример:
+
+```php
+Route::group(
+   ['middleware' => [TestMiddleware::class, 'index'], 
+    'prefix' => 'giga', 
+    'controller' => HomeController::class
+   ], function () {
+       Route::get('/name', 'index');
+       Route::get('/{name}', 'index');
+   });
+```
+
+При группировке нужно указать 2 параметра:
+1) Массив из необходимых аргументов
+2) Замыкание, содержащие маршруты
+
+Всего можно задать 3 аргумента для группы:
+1) **prefix** - при его добавлении, маршруты будут такого вида: ```/prefix/testRoute```. То есть, префикс просто добавляет указанное строковое значение перед маршрутом
+
+
+2) **middleware** - может принять как один, так и несколько middleware' ов. В примере выше указан только 1 middleware, но если нужно добавить больше, то необходимо указывать их во вложенном массиве, например так: 
+```php
+'middleware' => [
+    [TestMiddleware::class, 'index'],
+    [TestMiddleware::class, 'empty']
+]
+```
+3) **controller** - при его добавлении все маршруты внутри замыкания будут ссылаться на него. Можно указать, как класс + метод, например:
+```php
+'controller' => [MegaController::class, 'index']
+```
+Тогда у маршрутов не надо указывать контроллер:
+```php
+function () {
+    Route::get('/pupupu')
+    Route::post('rapapa')
+}
+```
+
+Либо, как в примере выше, можно просто передать класс:
+```php
+'controller' => MegaController::class
+```
+
+Но теперь маршруты должны указывать метод контроллера
+```php
+function () {
+    Route::get('/pupupu', 'index')
+    Route::post('rapapa', 'store')
+}
+```
 ## php Blaze
 
 Blaze - это удобный генератор моделей и контроллеров.
