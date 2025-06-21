@@ -11,19 +11,19 @@
 <div class="flex min-h-screen flex-col items-center justify-center px-4">
     <img src="/css/VirexALogo.svg" alt="logo">
     <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl w-full">
-        <div class="p-6 bg-transparent border border-indigo-500 shadow rounded-2xl hover:scale-95 transform-gpu transition">
+        <div class="cursor-pointer p-6 bg-transparent border border-indigo-500 shadow rounded-2xl hover:scale-95 transform-gpu transition">
             <h2 class="text-xl font-semibold">Удобная маршрутизация</h2>
             <p class="mt-2 text-gray-400">Простое объявление маршрутов.</p>
         </div>
-        <div class="p-6 bg-transparent border border-white shadow rounded-2xl hover:scale-95 transform-gpu transition">
+        <div class="cursor-pointer p-6 bg-transparent border border-white shadow rounded-2xl hover:scale-95 transform-gpu transition">
             <h2 class="text-xl font-semibold">Гибкие Middleware и Хелперы</h2>
             <p class="mt-2 text-gray-400">Поддержка middleware для контроля доступа и логики.</p>
         </div>
-        <div class="p-6 bg-transparent border border-white shadow rounded-2xl hover:scale-95 transform-gpu transition">
+        <div class="cursor-pointer p-6 bg-transparent border border-white shadow rounded-2xl hover:scale-95 transform-gpu transition">
             <h2 class="text-xl font-semibold">Контроллеры и MVC</h2>
             <p class="mt-2 text-gray-400">Структура контроллеров, разделение логики, упрощённый MVC подход.</p>
         </div>
-        <div class="p-6 bg-transparent border border-indigo-500 shadow rounded-2xl hover:scale-95 transform-gpu transition">
+        <div class="cursor-pointer p-6 bg-transparent border border-indigo-500 shadow rounded-2xl hover:scale-95 transform-gpu transition">
             <h2 class="text-xl font-semibold">Tailwind CSS готов</h2>
             <p class="mt-2 text-gray-400">Стилизация страниц сразу из коробки. Легко настраивается и расширяется.</p>
         </div>

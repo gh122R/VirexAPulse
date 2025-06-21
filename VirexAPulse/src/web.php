@@ -30,15 +30,13 @@ Route::get('/middlewares', [HomeController::class, 'index'], [
     [TestMiddleware::class, 'empty']
 ]);
 
-Route::group([
-    'middleware' => [[TestMiddleware::class, 'index'], [TestMiddleware::class, 'forTest']],
-    'prefix' => 'giga',
-    'controller' => HomeController::class], function () {
+Route::group(['middleware' => [TestMiddleware::class, 'index'], 'prefix' => 'giga', 'controller' => HomeController::class], function () {
     Route::get('/name', 'index');
     Route::get('/{name}', 'index');
 });
 
-/*
+/* +-----------------------------------------------------------------------------------------------------------------------------------+
+ * | Кратко про параметры, которые можно указать при регистрации маршрута
  * +-----------------------------------------------------------------------------------------------------------------------------------+
  * | Если вы регистрируете маршрут с помощью <<<Route::get>>> или <<<Route::post>>>, то                                                |
  * | первый аргумент это, собственно, сам маршрут :) Например /home                                                                    |

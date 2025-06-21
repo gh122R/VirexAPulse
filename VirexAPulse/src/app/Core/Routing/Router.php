@@ -7,6 +7,10 @@ namespace App\Core\Routing;
 use App\Core\Helpers\ErrorHandler;
 use App\Core\Interfaces\RouterInterface;
 
+/**
+    Вскоре будет написан DI контейнер под это дело :)
+ */
+
 class Router implements RouterInterface
 {
     private array $routes;
@@ -18,6 +22,8 @@ class Router implements RouterInterface
     private ProcessRequest $processRequest;
     private Render $render;
     private DynamicRoutesHandler $dynamicRoutesHandler;
+    private RouteGrouper $routeGrouper;
+    private RouteSetter $routeSetter;
 
     public function __construct()
     {
@@ -27,16 +33,26 @@ class Router implements RouterInterface
             ProcessRequest::class,
             DynamicRoutesHandler::class,
             Render::class,
+            RouteGrouper::class
         ]);
         $this->routes = [];
         $this->dynamicRoutes = [];
         $this->instanceCreator = new InstanceCreator();
+        $this->routeGrouper = new RouteGrouper();
+        $this->routeSetter = new RouteSetter();
         $this->routeRegister = new RouteRegister();
-        $this->processRequest = new ProcessRequest(($this->instanceCreator));
+        $this->processRequest = new ProcessRequest($this->instanceCreator);
         $this->dynamicRoutesHandler = new DynamicRoutesHandler();
         $this->render = new Render();
     }
 
+    /**
+     * Суть роутера проста - он менеджер. Его задача - дёрнуть нужный класс, когда это будет необходимо.
+     * Сейчас все те классы, которые переданы в конструктор поставляются всего с одним методом внутри: __invoke
+     * Это сделано для обеспечения модульности, ну и закос под функциональщину, само собой :)
+     * Именно поэтому вызов зависимостей происходит через круглые скобки, типа: ($this->className), чтобы сразу обратиться
+     * к __invoke методу класса
+     * */
 
     private function classExistChecker(array $classes = []): void
     {
@@ -74,70 +90,23 @@ class Router implements RouterInterface
             if(!empty($this->groupData['prefix'])) $route = '/' . $this->groupData['prefix'] . $route;
         }
         $routes = ($this->routeRegister)($route, $path, 'GET');
-        $this->routes = array_merge($routes['routes']);
+        $this->routes = array_merge($routes['routes'], $this->routes);
         return $this;
     }
 
     public function group(array $parameters, callable $routes): void
     {
-        $middleware = null;
-        $controller = null;
-        $prefix = null;
-        if (array_key_exists('middleware', $parameters))
-        {
-            if(is_array($parameters['middleware'][0]))
-            {
-                count($parameters['middleware']) === 2 ? $middleware = [$parameters['middleware'][0], $parameters['middleware'][1]] : $middleware = [$parameters['middleware'][0]];
-            }else
-            {
-                count($parameters['middleware']) === 2 ? $middleware = [[$parameters['middleware'][0], $parameters['middleware'][1]]] : $middleware = [[$parameters['middleware'][0]]];
-            }
-        }
-        if(array_key_exists('controller', $parameters))
-        {
-            if (is_array($parameters['controller']))
-            {
-                count($parameters['controller']) === 2 ? $controller = [$parameters['controller'][0], $parameters['controller'][1]] : $controller = [$parameters['controller'][0]];
-            }
-            if(is_string($parameters['controller']))
-            {
-                $controller = $parameters['controller'];
-            }
-        }
-        if(array_key_exists('prefix', $parameters))
-        {
-            $prefix = $parameters['prefix'];
-        }
-        $this->groupData = [
-            'prefix' => $prefix,
-            'middleware' => $middleware,
-            'controller' => $controller,
-        ];
+        $this->groupData = ($this->routeGrouper)($parameters, $routes);
         $routes();
         unset($this->groupData);
     }
 
     private function setRoute(string $route, array|callable|string $action, string $method ,array|callable $middleware = []): void
     {
-        if(!empty($this->groupData))
-        {
-            if(!empty($this->groupData['prefix'])) $route =  '/' . $this->groupData['prefix'] . $route;
-            if(!empty($this->groupData['controller']))
-            {
-                if(is_array($action))
-                {
-                    $action = $this->groupData['controller'];
-                }
-                if(is_string($action))
-                {
-                    $action = [$this->groupData['controller'], $action];
-                }
-            }
-            if(!empty($this->groupData['middleware'])) $middleware = $this->groupData['middleware'];
-        }
-        $routes = ($this->routeRegister)($route, $action, $method, $middleware);
-        $this->routes = array_merge($routes['routes']);
-        $this->dynamicRoutes = array_merge($routes['dynamicRoutes']);
+
+        $routes = ($this->routeSetter)($this->routeRegister, $this->groupData, $route, $action, $method, $middleware);
+        $this->routes = array_merge($routes['routes'], $this->routes);
+        $this->dynamicRoutes = array_merge($routes['dynamicRoutes'], $this->dynamicRoutes);
     }
 
     public function handler(string $uri)
