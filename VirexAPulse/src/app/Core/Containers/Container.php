@@ -21,8 +21,7 @@ class Container
 
     public function make(string $key)
     {
-        if (isset($this->instances[$key]))
-        {
+        if (isset($this->instances[$key])) {
             return $this->instances[$key];
         }
         return call_user_func($this->bindings[$key]);

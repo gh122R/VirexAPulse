@@ -17,18 +17,17 @@ class View implements ViewInterface
     {
         extract($data);
         ob_start();
-        $path =  BASE_PATH . '/src/Views/' . $view . '.html';
-        if (file_exists($path))
-        {
+        $path = BASE_PATH . '/src/Views/' . $view . '.html';
+        if (file_exists($path)) {
             include $path;
-        }elseif (file_exists(BASE_PATH . '/src/Views/' . $view . '.php'))
-        {
+        } elseif (file_exists(BASE_PATH . '/src/Views/' . $view . '.php')) {
             include BASE_PATH . '/src/Views/' . $view . '.php';
-        }else
-        {
-            if (class_exists(ErrorHandler::class))
-            {
-                return ErrorHandler::error("Файл представления не найден :(", description: "$view.html\(php) не найден");
+        } else {
+            if (class_exists(ErrorHandler::class)) {
+                return ErrorHandler::error(
+                    "Файл представления не найден :(",
+                    description: "$view.html\(php) не найден"
+                );
             }
             return "Файл представления не найден :( | $view.html\(php) не найден";
         }

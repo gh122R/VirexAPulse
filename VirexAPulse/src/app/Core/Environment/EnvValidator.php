@@ -15,7 +15,7 @@ class EnvValidator
                 ->required(['DRIVER', 'HOST', 'DATABASE', 'USERNAME', 'PASSWORD'])
                 ->notEmpty();
             return true;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return false;
         }
     }

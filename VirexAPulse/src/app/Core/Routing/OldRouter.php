@@ -3,6 +3,9 @@
 declare(strict_types = 1);
 namespace App\Core\Routing;
 
+/**
+ * Старая реализация роутера
+ */
 
 use App\Core\Helpers\ErrorHandler;
 use App\Core\Helpers\View;

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace App\Core\Helpers;
 
 /**
@@ -16,8 +17,12 @@ namespace App\Core\Helpers;
  * */
 class ErrorHandler extends ListOfErrors
 {
-    public static function error(string $message, string $view = '', string $dangerLevel = 'Критическая ошибка',string $description = ''): string
-    {
+    public static function error(
+        string $message,
+        string $view = '',
+        string $dangerLevel = 'Критическая ошибка',
+        string $description = ''
+    ): string {
         try {
             if (class_exists(View::class) && file_exists(BASE_PATH . '/src/Views/ExceptionsPage.html')) {
                 return View::render($view ?: "ExceptionsPage", [
@@ -27,8 +32,7 @@ class ErrorHandler extends ListOfErrors
                 ]);
             }
             return "--------$dangerLevel-------- <br> | $message <br> | $description ";
-        }catch (\Exception $exception)
-        {
+        } catch (\Exception $exception) {
             return $exception->getMessage();
         }
     }

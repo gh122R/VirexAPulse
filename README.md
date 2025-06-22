@@ -12,7 +12,7 @@
 VirexAPulse - это расширенная версия [VirexA](https://github.com/gh122R/VirexA)
 
 ### Почему VirexA?
-Потому что писать backend на PHP теперь станет быстро и удобно! VirexA предлагает Laravel-подобную маршрутизацию, но без тяжеловесных зависимостей.
+Потому что писать backend на PHP теперь станет чутка быстрей. VirexA предлагает Laravel-подобную маршрутизацию, но без тяжеловесных зависимостей.
 
 ### Вдохновлён
 
@@ -232,7 +232,7 @@ Route::group(
 ```php
 function () {
     Route::get('/pupupu')
-    Route::post('rapapa')
+    Route::post('/rapapa')
 }
 ```
 
@@ -245,7 +245,7 @@ function () {
 ```php
 function () {
     Route::get('/pupupu', 'index')
-    Route::post('rapapa', 'store')
+    Route::post('/rapapa', 'store')
 }
 ```
 ## php Blaze

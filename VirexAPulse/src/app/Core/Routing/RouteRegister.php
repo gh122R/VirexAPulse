@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Core\Routing;
 
@@ -16,17 +16,16 @@ class RouteRegister
             'dynamicRoutes' => $this->dynamicRoutes,
         ];
     }
-    public function __invoke(string $route, array|callable|string $action ,string $method, array|callable $middleware = []): array
+
+    public function __invoke(string $route, array|callable|string $action, string $method, array|callable $middleware = []): array
     {
-        if(is_string($action))
-        {
+        if (is_string($action)) {
             $this->routes[$route] = [
                 'view' => $action,
                 'method' => $method,
             ];
         }
-        if (str_contains($route, '{'))
-        {
+        if (str_contains($route, '{')) {
             $pattern = "#^" . preg_replace('#\{(\w+)\}#', '(\w+)', $route) . "$#";
             preg_match_all('/\{(\w+)\}/', $route, $matches);
             $this->dynamicRoutes[$route] = [
@@ -34,10 +33,9 @@ class RouteRegister
                 'method' => $method,
                 'middlewareList' => $middleware,
                 'matches' => $matches[1],
-                'pattern'=> $pattern
+                'pattern' => $pattern
             ];
-        }elseif(!is_string($action))
-        {
+        } elseif (!is_string($action)) {
             $this->routes[$route] = [
                 'action' => $action,
                 'method' => $method,

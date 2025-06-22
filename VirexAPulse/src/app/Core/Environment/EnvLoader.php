@@ -13,7 +13,6 @@ class EnvLoader
     {
         $this->dotenv = Dotenv::createImmutable($path);
         $this->dotenv->load();
-        return true;
     }
     public function Dotenv(): Dotenv
     {

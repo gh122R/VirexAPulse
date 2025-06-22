@@ -20,7 +20,7 @@ class Facade
 
     protected static function getAccessor():string
     {
-        throw new \Exception('Фасад не реализует метод getAccessor!');
+        throw new \Exception('Фасад не реализует метод getAccessor😡');
     }
 
     public static function __callStatic($method, $parameters)

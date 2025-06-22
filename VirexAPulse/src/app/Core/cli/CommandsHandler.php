@@ -8,16 +8,15 @@ class CommandsHandler
         exec('php -S 127.0.0.1:7777 -t public');
         exit;
     }
+
     public function makeController(string $name, string|null $type): string
     {
         $name = ucfirst($name) . 'Controller';
         $path = CONTROLLERS_PATH . "/$name";
-        if (file_exists($path . '.php'))
-        {
+        if (file_exists($path . '.php')) {
             return "Контроллер {$name}.php уже существует!\n";
         }
-        if($type === '--full')
-        {
+        if ($type === '--full') {
             $template = <<<PHP
             <?php
             namespace src\Controllers;
@@ -60,8 +59,7 @@ class CommandsHandler
                 }
             }
             PHP;
-        }elseif($type === null)
-        {
+        } elseif ($type === null) {
             $template = <<<PHP
             <?php
             namespace src\Controllers;
@@ -83,11 +81,9 @@ class CommandsHandler
     {
         $name = ucfirst($name);
         $path = MODELS_PATH . "/$name.php";
-        if(file_exists($path))
-        {
+        if (file_exists($path)) {
             return "Модель {$name}.php уже существует!\n";
-        }else
-        {
+        } else {
             $template = <<<PHP
             <?php
             namespace src\Models;

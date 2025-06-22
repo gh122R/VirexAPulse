@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Core\Routing;
 
@@ -10,11 +10,9 @@ class Render
 {
     public function __invoke(string $view): string
     {
-        if(class_exists(View::class))
-        {
+        if (class_exists(View::class)) {
             return View::render($view);
-        }else
-        {
+        } else {
             return error('Класс View не найден!', description: 'Работа роутера невозможна без класса View');
         }
     }

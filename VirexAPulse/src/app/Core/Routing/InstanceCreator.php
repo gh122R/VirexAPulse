@@ -8,11 +8,9 @@ class InstanceCreator
 {
     public function __invoke(string $class, mixed $argument = null)
     {
-        if (class_exists($class))
-        {
+        if (class_exists($class)) {
             return $argument !== null ? new $class($argument) : new $class();
-        }else
-        {
+        } else {
             return ErrorHandler::classNotFound($class);
         }
     }
