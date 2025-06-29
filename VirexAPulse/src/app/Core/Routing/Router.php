@@ -24,25 +24,33 @@ class Router implements RouterInterface
     private RouteGrouper $routeGrouper;
     private RouteSetter $routeSetter;
 
-    public function __construct()
-    {
+    public function __construct(
+        InstanceCreator $instanceCreator,
+        RouteGrouper $routeGrouper,
+        RouteSetter $routeSetter,
+        RouteRegister $routeRegister,
+        ProcessRequest $processRequest,
+        DynamicRoutesHandler $dynamicRoutesHandler,
+        Render $render
+    ) {
         $this->classExistChecker([
-            InstanceCreator::class,
-            RouteRegister::class,
-            ProcessRequest::class,
-            DynamicRoutesHandler::class,
-            Render::class,
-            RouteGrouper::class
+            get_class($instanceCreator),
+            get_class($routeGrouper),
+            get_class($routeSetter),
+            get_class($routeRegister),
+            get_class($processRequest),
+            get_class($dynamicRoutesHandler),
+            get_class($render),
         ]);
         $this->routes = [];
         $this->dynamicRoutes = [];
-        $this->instanceCreator = new InstanceCreator();
-        $this->routeGrouper = new RouteGrouper();
-        $this->routeSetter = new RouteSetter();
-        $this->routeRegister = new RouteRegister();
-        $this->processRequest = new ProcessRequest($this->instanceCreator);
-        $this->dynamicRoutesHandler = new DynamicRoutesHandler();
-        $this->render = new Render();
+        $this->instanceCreator = $instanceCreator;
+        $this->routeGrouper = $routeGrouper;
+        $this->routeSetter = $routeSetter;
+        $this->routeRegister = $routeRegister;
+        $this->processRequest = $processRequest;
+        $this->dynamicRoutesHandler = $dynamicRoutesHandler;
+        $this->render = $render;
     }
 
     /**
